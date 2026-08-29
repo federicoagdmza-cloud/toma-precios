@@ -152,13 +152,11 @@
 
     let currentSession = null;
 
-    // Cargar perfiles al iniciar
     window.onload = function() {
         const container = document.getElementById('profiles-container');
         container.innerHTML = "";
         
         perfiles.forEach((p, index) => {
-            // Genera las 2 letras iniciales del local
             const initials = p.local.substring(0,2).toUpperCase();
             const card = document.createElement('div');
             card.className = "bg-card p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-slate-700 transition active:scale-95";
@@ -269,6 +267,12 @@
         const confirmacion = confirm("¿Terminaste de cargar los precios? Se enviarán a la base de datos.");
         if(!confirmacion) return;
 
+        // Selecciona el botón y lo bloquea para evitar doble clic
+        const btnEnviar = document.querySelector('button[onclick="exportarToma()"]');
+        btnEnviar.disabled = true;
+        btnEnviar.innerText = "Enviando...";
+        btnEnviar.classList.add('opacity-50', 'cursor-not-allowed');
+
         const cards = document.querySelectorAll('#products-container > div');
         const fechaActual = new Date().toLocaleString('es-AR');
         let registrosParaEnviar = [];
@@ -280,7 +284,6 @@
             const marca = card.dataset.marca;
             const gr = card.dataset.gr;
             
-            // Reemplazo definitivo de punto a coma al momento de enviar
             let precio = document.getElementById(`input_${id}`).value;
             precio = precio.replace(/\./g, ','); 
 
@@ -310,19 +313,15 @@
 
         if(!hayDatos){
             alert("No cargaste ningún precio. Revisa la lista.");
+            btnEnviar.disabled = false;
+            btnEnviar.innerText = "Revisar y Enviar Toma";
+            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
             return;
         }
 
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzQaFtGv7u_g5ngGSK008ty_GIW3nDV03p6lXcQXzds7KcVXIStNwNLqb7vN0VRvoQH/exec';
 
-        if (URL_SCRIPT.includes('AQUI_PEGA')) {
-            alert("Falta configurar la URL del servidor en el código.");
-            return;
-        }
-
         try {
-            alert("Enviando datos a la nube, por favor espera un momento...");
-            
             await fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -330,14 +329,22 @@
                 body: JSON.stringify(registrosParaEnviar)
             });
 
-            alert("¡Toma enviada con éxito! Los precios ya se actualizaron en la base de datos.");
+            alert("¡Toma enviada con éxito! Los precios ya se actualizaron.");
             document.getElementById('form-view').classList.add('hidden');
             document.getElementById('home-view').classList.remove('hidden');
             currentSession = null;
+            
+            // Restaura el botón al volver al inicio
+            btnEnviar.disabled = false;
+            btnEnviar.innerText = "Revisar y Enviar Toma";
+            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
 
         } catch (error) {
             alert("Hubo un error al enviar. Revisa tu conexión a internet.");
             console.error(error);
+            btnEnviar.disabled = false;
+            btnEnviar.innerText = "Revisar y Enviar Toma";
+            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     }
 
