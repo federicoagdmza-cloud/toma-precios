@@ -273,7 +273,18 @@
         btnEnviar.classList.add('opacity-50', 'cursor-not-allowed');
 
         const cards = document.querySelectorAll('#products-container > div');
-        const fechaActual = new Date().toLocaleString('es-AR');
+        
+        // --- FECHA FORZADA EN FORMATO 24HS EXACTO ---
+        const ahora = new Date();
+        const dia = String(ahora.getDate()).padStart(2, '0');
+        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
+        const anio = ahora.getFullYear();
+        const horas = String(ahora.getHours()).padStart(2, '0');
+        const minutos = String(ahora.getMinutes()).padStart(2, '0');
+        const segundos = String(ahora.getSeconds()).padStart(2, '0');
+        const fechaActual = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
+        // -------------------------------------------
+
         let registrosParaEnviar = [];
         let hayDatos = false;
 
@@ -318,7 +329,7 @@
             return;
         }
 
-        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzvhhvRP67a1WObARPatrckzCCHtEkMZGpK2o-4kzyIVcl3CgZBthsc7KVigxP3JmCk/exec';
+        const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzQaFtGv7u_g5ngGSK008ty_GIW3nDV03p6lXcQXzds7KcVXIStNwNLqb7vN0VRvoQH/exec';
 
         try {
             await fetch(URL_SCRIPT, {
