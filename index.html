@@ -20,6 +20,8 @@
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="text"] { -moz-appearance: textfield; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
+        /* Ajuste para que el texto de fondo (placeholder) sea más visible */
+        ::placeholder { color: #94a3b8 !important; opacity: 1 !important; }
     </style>
 </head>
 <body class="antialiased pb-24">
@@ -197,6 +199,14 @@
 
         prodsFiltrados.forEach((prod, idx) => {
             const prodId = `prod_${idx}`;
+            
+            // MAGIA: Busca si hay un precio guardado en la memoria del celular para este local y producto
+            const claveMemoria = `precio_${currentSession.local}_${prod.cat}_${prod.marca}_${prod.gr}`;
+            const precioGuardado = localStorage.getItem(claveMemoria);
+            
+            // Si encuentra un precio guardado, lo pone como "Ant: $XXX", sino deja el "0,00"
+            const placeholderTexto = precioGuardado ? `Ant: $${precioGuardado}` : "0,00";
+
             const card = document.createElement('div');
             card.className = "bg-card rounded-xl p-4 shadow flex flex-col gap-3";
             card.innerHTML = `
@@ -206,7 +216,7 @@
                 <div class="flex items-center gap-2">
                     <div class="relative flex-grow flex items-center">
                         <span class="absolute left-3 text-gray-400 font-bold text-lg pointer-events-none">$</span>
-                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="0,00" 
+                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="${placeholderTexto}" 
                             class="w-full bg-slate-800 text-white rounded-lg pl-8 pr-3 py-3 text-lg outline-none focus:ring-2 focus:ring-accent transition">
                     </div>
                     <button id="btn_oferta_${prodId}" onclick="toggleOferta('${prodId}')" 
@@ -274,7 +284,6 @@
 
         const cards = document.querySelectorAll('#products-container > div');
         
-        // --- FECHA FORZADA EN FORMATO 24HS EXACTO ---
         const ahora = new Date();
         const dia = String(ahora.getDate()).padStart(2, '0');
         const mes = String(ahora.getMonth() + 1).padStart(2, '0');
@@ -283,7 +292,6 @@
         const minutos = String(ahora.getMinutes()).padStart(2, '0');
         const segundos = String(ahora.getSeconds()).padStart(2, '0');
         const fechaActual = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
-        // -------------------------------------------
 
         let registrosParaEnviar = [];
         let hayDatos = false;
@@ -305,6 +313,13 @@
 
             if (precio !== "" || fs === "SI") {
                 hayDatos = true;
+                
+                // MAGIA: Guardar el precio en la memoria del celular para la próxima semana
+                if (precio !== "") {
+                    const claveMemoria = `precio_${currentSession.local}_${cat}_${marca}_${gr}`;
+                    localStorage.setItem(claveMemoria, precio);
+                }
+
                 registrosParaEnviar.push({
                     id: 'ID_' + Math.random().toString(36).substr(2, 9),
                     fecha: fechaActual,
