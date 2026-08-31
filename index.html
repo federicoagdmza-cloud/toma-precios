@@ -20,8 +20,7 @@
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="text"] { -moz-appearance: textfield; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        /* Ajuste para que el texto de fondo (placeholder) sea más visible */
-        ::placeholder { color: #94a3b8 !important; opacity: 1 !important; }
+        ::placeholder { color: #64748b; }
     </style>
 </head>
 <body class="antialiased pb-24">
@@ -200,23 +199,22 @@
         prodsFiltrados.forEach((prod, idx) => {
             const prodId = `prod_${idx}`;
             
-            // MAGIA: Busca si hay un precio guardado en la memoria del celular para este local y producto
+            // Busca si hay un precio guardado en la memoria del celular
             const claveMemoria = `precio_${currentSession.local}_${prod.cat}_${prod.marca}_${prod.gr}`;
-            const precioGuardado = localStorage.getItem(claveMemoria);
-            
-            // Si encuentra un precio guardado, lo pone como "Ant: $XXX", sino deja el "0,00"
-            const placeholderTexto = precioGuardado ? `Ant: $${precioGuardado}` : "0,00";
+            const precioGuardado = localStorage.getItem(claveMemoria) || ""; 
 
             const card = document.createElement('div');
             card.className = "bg-card rounded-xl p-4 shadow flex flex-col gap-3";
             card.innerHTML = `
-                <div class="text-accent font-bold text-base tracking-wide">
+                <!-- ACÁ ESTÁ LA MAGIA DEL TEXTO GRANDE: Cambiado a text-xl -->
+                <div class="text-accent font-bold text-xl tracking-wide mb-1">
                     ${prod.cat} ${prod.marca} ${prod.gr}
                 </div>
                 <div class="flex items-center gap-2">
                     <div class="relative flex-grow flex items-center">
                         <span class="absolute left-3 text-gray-400 font-bold text-lg pointer-events-none">$</span>
-                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="${placeholderTexto}" 
+                        <!-- El valor precompletado es el precioGuardado -->
+                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="0,00" value="${precioGuardado}"
                             class="w-full bg-slate-800 text-white rounded-lg pl-8 pr-3 py-3 text-lg outline-none focus:ring-2 focus:ring-accent transition">
                     </div>
                     <button id="btn_oferta_${prodId}" onclick="toggleOferta('${prodId}')" 
@@ -262,6 +260,7 @@
             btn.dataset.fs = "NO";
             input.disabled = false;
             input.classList.remove('opacity-50');
+            // Al sacar F/S, dejamos el casillero en blanco para que escriban el precio nuevo
             input.value = "";
         } else {
             btn.classList.add('bg-red-500', 'text-white', 'font-bold');
@@ -311,10 +310,11 @@
             const oferta = btnOferta.dataset.oferta === "SI" ? "SI" : "NO";
             const fs = btnFS.dataset.fs === "SI" ? "SI" : "NO";
 
+            // Se envía si hay un precio (ya sea nuevo o precompletado) o si está en F/S
             if (precio !== "" || fs === "SI") {
                 hayDatos = true;
                 
-                // MAGIA: Guardar el precio en la memoria del celular para la próxima semana
+                // Guarda el precio que se está enviando en la memoria del celular para usarlo la semana que viene
                 if (precio !== "") {
                     const claveMemoria = `precio_${currentSession.local}_${cat}_${marca}_${gr}`;
                     localStorage.setItem(claveMemoria, precio);
