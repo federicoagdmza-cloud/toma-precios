@@ -1,9 +1,5 @@
 <!DOCTYPE html>
 <html lang="es">
-<link rel="manifest" href="manifest.json">
-<link rel="icon" type="image/png" href="logo-agd-192.png">
-<link rel="apple-touch-icon" href="logo-agd-192.png">
-    
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
@@ -20,16 +16,15 @@
         input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
         input[type="text"] { -moz-appearance: textfield; }
         ::-webkit-scrollbar { width: 0px; background: transparent; }
-        ::placeholder { color: #64748b; }
     </style>
 </head>
 <body class="antialiased pb-24">
 
-    <!-- PANTALLA 1: SELECCIÓN DE LOCAL -->
+    <!-- PANTALLA 1: SELECCIÓN DE REPOSITOR/LOCAL -->
     <div id="home-view" class="p-4 max-w-2xl mx-auto">
         <p class="text-xs font-semibold text-gray-400 tracking-wider mb-1 uppercase">Toma de Precios</p>
-        <h1 class="text-3xl font-bold mb-6">Seleccionar Local</h1>
-        <div id="profiles-container" class="flex flex-col gap-4">
+        <h1 class="text-3xl font-bold mb-6">¿Quién sos?</h1>
+        <div id="profiles-container" class="flex flex-col gap-3">
             <!-- Se cargan por JavaScript -->
         </div>
     </div>
@@ -42,14 +37,14 @@
             </button>
             <div class="flex items-center gap-2">
                 <div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div>
-                <span id="current-local-name" class="font-bold text-emerald-500 tracking-wide text-lg"></span>
+                <span id="current-local-name" class="font-bold text-emerald-500 tracking-wide"></span>
             </div>
         </div>
 
-        <div id="products-container" class="p-4 flex flex-col gap-5"></div>
+        <div id="products-container" class="p-4 flex flex-col gap-4"></div>
 
         <div class="fixed bottom-0 left-0 w-full bg-darker p-4 border-t border-gray-800 z-10 flex justify-center shadow-lg">
-            <button onclick="exportarToma()" class="w-full max-w-2xl bg-accent hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-lg text-xl transition-colors shadow-lg">
+            <button onclick="exportarToma()" class="w-full max-w-2xl bg-accent hover:bg-amber-600 text-slate-900 font-bold py-4 rounded-lg text-lg transition-colors shadow-lg">
                 Revisar y Enviar Toma
             </button>
         </div>
@@ -57,20 +52,20 @@
 
 <script>
     const perfiles = [
-        { local: "AIELLO", tipo: "Supermercado" },
-        { local: "ATOMO", tipo: "Supermercado" },
-        { local: "BLOW MAX", tipo: "Mayorista" },
-        { local: "CAFE AMERICA", tipo: "Mayorista" },
-        { local: "CARREFOUR", tipo: "Supermercado" },
-        { local: "CHANGO MAS", tipo: "Supermercado" },
-        { local: "COTO", tipo: "Supermercado" },
-        { local: "EUROPA", tipo: "Supermercado" },
-        { local: "EUROPA MAYORISTA", tipo: "Mayorista" },
-        { local: "JUMBO", tipo: "Supermercado" },
-        { local: "LA ANONIMA", tipo: "Supermercado" },
-        { local: "MAKRO", tipo: "Mayorista" },
-        { local: "OSCAR DAVID", tipo: "Mayorista" },
-        { local: "VEA", tipo: "Supermercado" }
+        { rep: "Mario Caliva", local: "AIELLO", tipo: "Supermercado" },
+        { rep: "Martin Malizani", local: "VEA", tipo: "Supermercado" },
+        { rep: "Martin Malizani", local: "ATOMO", tipo: "Supermercado" },
+        { rep: "Oscar Wutzke", local: "BLOW MAX", tipo: "Mayorista" },
+        { rep: "Franco Rojas", local: "Cafe America", tipo: "Mayorista" },
+        { rep: "Franco Rojas", local: "Anonima SJ", tipo: "Supermercado" },
+        { rep: "Gonzalo Angel", local: "CHANGO M.", tipo: "Supermercado" },
+        { rep: "Sergio Garrido", local: "JUMBO P.", tipo: "Supermercado" },
+        { rep: "Pablo Quiroga", local: "COTO", tipo: "Supermercado" },
+        { rep: "Axel Pallero", local: "EUROPA", tipo: "Supermercado" },
+        { rep: "Axel Pallero", local: "Mayorista E.", tipo: "Mayorista" },
+        { rep: "Horacio Delpir", local: "CARREFOUR", tipo: "Supermercado" },
+        { rep: "Ignacio Troncoso", local: "OSCAR D.", tipo: "Mayorista" },
+        { rep: "Ignacio Troncoso", local: "MAKRO", tipo: "Mayorista" }
     ];
 
     const productosBase = [
@@ -129,10 +124,14 @@
         { cat: "EXTRA VIRGEN", marca: "Lira", gr: "pet 500cc", canal: "Ambos" },
         { cat: "EXTRA VIRGEN", marca: "Canuelas", gr: "pet 500cc", canal: "Ambos" },
         { cat: "EXTRA VIRGEN", marca: "Natura", gr: "pet 500cc", canal: "Ambos" },
-        { cat: "OLIVADOS", marca: "Lira", gr: "pet 900cc", canal: "Ambos" },
-        { cat: "OLIVADOS", marca: "Cocinero", gr: "pet 900cc", canal: "Ambos" },
-        { cat: "OLIVADOS", marca: "Copisi", gr: "pet 900cc", canal: "Ambos" },
-        { cat: "OLIVADOS", marca: "Natura", gr: "pet 900cc", canal: "Ambos" },
+        
+        // --- AQUÍ ESTÁ EL CAMBIO DE LOS OLIVADOS ---
+        // Puedes cambiar el texto que está entre las comillas de 'alias:' por el que prefieran los repositores.
+        { cat: "OLIVADOS", marca: "Lira", gr: "pet 900cc", canal: "Ambos", alias: "Girasol + Oliva (900cc)" },
+        { cat: "OLIVADOS", marca: "Cocinero", gr: "pet 900cc", canal: "Ambos", alias: "Girasol + Oliva (900cc)" },
+        { cat: "OLIVADOS", marca: "Copisi", gr: "pet 900cc", canal: "Ambos", alias: "Girasol + Oliva (900cc)" },
+        { cat: "OLIVADOS", marca: "Natura", gr: "pet 900cc", canal: "Ambos", alias: "Girasol + Oliva (900cc)" },
+        
         { cat: "MAIZ", marca: "Lira", gr: "pet 900cc", canal: "Ambos" },
         { cat: "MAIZ", marca: "Arcor", gr: "pet 900cc", canal: "Ambos" },
         { cat: "MAIZ", marca: "Mazola", gr: "pet 900cc", canal: "Ambos" },
@@ -153,20 +152,21 @@
 
     let currentSession = null;
 
+    // Cargar perfiles al iniciar
     window.onload = function() {
         const container = document.getElementById('profiles-container');
         container.innerHTML = "";
         
         perfiles.forEach((p, index) => {
-            const initials = p.local.substring(0,2).toUpperCase();
+            const initials = p.rep.split(' ').map(n => n[0]).join('').substring(0,2).toUpperCase();
             const card = document.createElement('div');
-            card.className = "bg-card p-5 rounded-xl flex items-center gap-5 cursor-pointer hover:bg-slate-700 transition active:scale-95";
+            card.className = "bg-card p-4 rounded-xl flex items-center gap-4 cursor-pointer hover:bg-slate-700 transition active:scale-95";
             card.onclick = function() { openForm(index); };
             card.innerHTML = `
-                <div class="w-14 h-14 rounded-lg bg-slate-600 flex items-center justify-center text-accent font-bold text-xl">${initials}</div>
+                <div class="w-12 h-12 rounded-lg bg-slate-600 flex items-center justify-center text-accent font-bold text-lg">${initials}</div>
                 <div>
-                    <h2 class="font-bold text-xl leading-tight">${p.local}</h2>
-                    <p class="text-base text-gray-400 mt-1">${p.tipo}</p>
+                    <h2 class="font-bold text-lg leading-tight">${p.rep}</h2>
+                    <p class="text-sm text-gray-400">${p.local} &middot; ${p.tipo}</p>
                 </div>
             `;
             container.appendChild(card);
@@ -177,7 +177,7 @@
         currentSession = perfiles[profileIndex];
         document.getElementById('home-view').classList.add('hidden');
         document.getElementById('form-view').classList.remove('hidden');
-        document.getElementById('current-local-name').innerText = currentSession.local;
+        document.getElementById('current-local-name').innerText = currentSession.local.toUpperCase();
         window.scrollTo(0, 0);
         renderProducts();
     }
@@ -199,34 +199,33 @@
         prodsFiltrados.forEach((prod, idx) => {
             const prodId = `prod_${idx}`;
             
-            // Busca si hay un precio guardado en la memoria del celular
-            const claveMemoria = `precio_${currentSession.local}_${prod.cat}_${prod.marca}_${prod.gr}`;
-            const precioGuardado = localStorage.getItem(claveMemoria) || ""; 
+            // LA MAGIA ESTÁ AQUÍ: Si tiene alias lo muestra, si no, muestra el texto técnico de siempre
+            const tituloVisible = prod.alias ? prod.alias : `${prod.cat} ${prod.marca} ${prod.gr}`;
 
             const card = document.createElement('div');
-            card.className = "bg-card rounded-xl p-4 shadow flex flex-col gap-3";
+            card.className = "bg-card rounded-xl p-3 shadow flex flex-col gap-2";
             card.innerHTML = `
-                <!-- ACÁ ESTÁ LA MAGIA DEL TEXTO GRANDE: Cambiado a text-xl -->
-                <div class="text-accent font-bold text-xl tracking-wide mb-1">
-                    ${prod.cat} ${prod.marca} ${prod.gr}
+                <div class="text-accent font-bold text-sm tracking-wide">
+                    ${tituloVisible}
                 </div>
                 <div class="flex items-center gap-2">
-                    <div class="relative flex-grow flex items-center">
-                        <span class="absolute left-3 text-gray-400 font-bold text-lg pointer-events-none">$</span>
-                        <!-- El valor precompletado es el precioGuardado -->
-                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="0,00" value="${precioGuardado}"
-                            class="w-full bg-slate-800 text-white rounded-lg pl-8 pr-3 py-3 text-lg outline-none focus:ring-2 focus:ring-accent transition">
+                    <div class="relative flex-grow">
+                        <span class="absolute left-3 top-2.5 text-gray-400 font-bold">$</span>
+                        <input type="text" inputmode="decimal" oninput="this.value = this.value.replace('.', ',')" id="input_${prodId}" placeholder="0,00" 
+                            class="w-full bg-slate-800 text-white rounded-lg pl-8 pr-3 py-2 outline-none focus:ring-2 focus:ring-accent transition">
                     </div>
                     <button id="btn_oferta_${prodId}" onclick="toggleOferta('${prodId}')" 
-                        class="px-5 py-3 rounded-lg bg-slate-700 text-base font-medium border border-transparent transition-colors">
+                        class="px-4 py-2 rounded-lg bg-slate-700 text-sm font-medium border border-transparent transition-colors">
                         Oferta
                     </button>
                     <button id="btn_fs_${prodId}" onclick="toggleFS('${prodId}')" 
-                        class="px-4 py-3 rounded-lg bg-slate-700 text-base font-medium border border-transparent transition-colors flex items-center gap-1">
-                        <span class="text-red-400 text-sm">🚫</span> F/S
+                        class="px-3 py-2 rounded-lg bg-slate-700 text-sm font-medium border border-transparent transition-colors flex items-center gap-1">
+                        <span class="text-red-400 text-xs">🚫</span> F/S
                     </button>
                 </div>
             `;
+            
+            // El dataset SIGUE ENVIANDO LOS NOMBRES TÉCNICOS al servidor (no se rompe nada)
             card.dataset.cat = prod.cat;
             card.dataset.marca = prod.marca;
             card.dataset.gr = prod.gr;
@@ -260,7 +259,6 @@
             btn.dataset.fs = "NO";
             input.disabled = false;
             input.classList.remove('opacity-50');
-            // Al sacar F/S, dejamos el casillero en blanco para que escriban el precio nuevo
             input.value = "";
         } else {
             btn.classList.add('bg-red-500', 'text-white', 'font-bold');
@@ -276,27 +274,15 @@
         const confirmacion = confirm("¿Terminaste de cargar los precios? Se enviarán a la base de datos.");
         if(!confirmacion) return;
 
-        const btnEnviar = document.querySelector('button[onclick="exportarToma()"]');
-        btnEnviar.disabled = true;
-        btnEnviar.innerText = "Enviando...";
-        btnEnviar.classList.add('opacity-50', 'cursor-not-allowed');
-
         const cards = document.querySelectorAll('#products-container > div');
-        
-        const ahora = new Date();
-        const dia = String(ahora.getDate()).padStart(2, '0');
-        const mes = String(ahora.getMonth() + 1).padStart(2, '0');
-        const anio = ahora.getFullYear();
-        const horas = String(ahora.getHours()).padStart(2, '0');
-        const minutos = String(ahora.getMinutes()).padStart(2, '0');
-        const segundos = String(ahora.getSeconds()).padStart(2, '0');
-        const fechaActual = `${dia}/${mes}/${anio} ${horas}:${minutos}:${segundos}`;
-
+        const fechaActual = new Date().toLocaleString('es-AR');
         let registrosParaEnviar = [];
         let hayDatos = false;
 
         cards.forEach(card => {
             const id = card.querySelector('input').id.replace('input_', '');
+            
+            // El sistema de envío sigue extrayendo los datos técnicos del dataset
             const cat = card.dataset.cat;
             const marca = card.dataset.marca;
             const gr = card.dataset.gr;
@@ -310,21 +296,13 @@
             const oferta = btnOferta.dataset.oferta === "SI" ? "SI" : "NO";
             const fs = btnFS.dataset.fs === "SI" ? "SI" : "NO";
 
-            // Se envía si hay un precio (ya sea nuevo o precompletado) o si está en F/S
             if (precio !== "" || fs === "SI") {
                 hayDatos = true;
-                
-                // Guarda el precio que se está enviando en la memoria del celular para usarlo la semana que viene
-                if (precio !== "") {
-                    const claveMemoria = `precio_${currentSession.local}_${cat}_${marca}_${gr}`;
-                    localStorage.setItem(claveMemoria, precio);
-                }
-
                 registrosParaEnviar.push({
                     id: 'ID_' + Math.random().toString(36).substr(2, 9),
                     fecha: fechaActual,
-                    repositor: "", 
-                    local: currentSession.local, 
+                    repositor: currentSession.rep,
+                    local: currentSession.local,
                     tipo: currentSession.tipo,
                     categoria: cat,
                     marca: marca,
@@ -338,15 +316,19 @@
 
         if(!hayDatos){
             alert("No cargaste ningún precio. Revisa la lista.");
-            btnEnviar.disabled = false;
-            btnEnviar.innerText = "Revisar y Enviar Toma";
-            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
             return;
         }
 
         const URL_SCRIPT = 'https://script.google.com/macros/s/AKfycbzQaFtGv7u_g5ngGSK008ty_GIW3nDV03p6lXcQXzds7KcVXIStNwNLqb7vN0VRvoQH/exec';
 
+        if (URL_SCRIPT.includes('AQUI_PEGA')) {
+            alert("Falta configurar la URL del servidor en el código.");
+            return;
+        }
+
         try {
+            alert("Enviando datos a la nube, por favor espera un momento...");
+            
             await fetch(URL_SCRIPT, {
                 method: 'POST',
                 mode: 'no-cors',
@@ -354,29 +336,25 @@
                 body: JSON.stringify(registrosParaEnviar)
             });
 
-            alert("¡Toma enviada con éxito! Los precios ya se actualizaron.");
+            alert("¡Toma enviada con éxito! Los precios ya se actualizaron en la base de datos.");
             document.getElementById('form-view').classList.add('hidden');
             document.getElementById('home-view').classList.remove('hidden');
             currentSession = null;
-            
-            btnEnviar.disabled = false;
-            btnEnviar.innerText = "Revisar y Enviar Toma";
-            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
 
         } catch (error) {
             alert("Hubo un error al enviar. Revisa tu conexión a internet.");
             console.error(error);
-            btnEnviar.disabled = false;
-            btnEnviar.innerText = "Revisar y Enviar Toma";
-            btnEnviar.classList.remove('opacity-50', 'cursor-not-allowed');
         }
     }
 
+    // --- EVENTO UNIVERSAL QUE HACE QUE EL ENTER BAJE AL SIGUIENTE CASILLERO ---
     document.addEventListener('keydown', function(event) {
         if (event.key === 'Enter' || event.keyCode === 13) {
-            event.preventDefault();
+            event.preventDefault(); 
+            
             const inputs = Array.from(document.querySelectorAll('input[id^="input_"]:not(:disabled)'));
             const index = inputs.indexOf(event.target);
+            
             if (index > -1 && index < inputs.length - 1) {
                 inputs[index + 1].focus();
             }
